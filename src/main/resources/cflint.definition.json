@@ -976,6 +976,18 @@
                     "severity": "WARNING"
                 }
             ]
+        },
+        {
+            "name": "FunctionCaseChecker",
+            "className": "FunctionCaseChecker",
+            "message": [
+                {
+                    "code": "INCORRECT_FUNCTION_CASE",
+                    "severity": "ERROR",
+                    "messageText": "Incorrect naming convention case for function: ${variable}. Use camel case!"
+                }
+            ],
+            "parameter": []
         }
     ],
     "ruleGroup": [
