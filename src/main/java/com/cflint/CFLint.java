@@ -105,6 +105,7 @@ public class CFLint implements IErrorReporter {
     private static final String PARSE_ERROR = "PARSE_ERROR";
     private static final String PLUGIN_ERROR = "PLUGIN_ERROR";
     private static final String MISSING_SEMI = "MISSING_SEMI";
+    private static final String AVOID_TABS = "AVOID_TABS";
     private static final String AVOID_EMPTY_FILES = "AVOID_EMPTY_FILES";
     private static final String RESOURCE_BUNDLE_NAME = "com.cflint.cflint";
 
@@ -327,6 +328,7 @@ public class CFLint implements IErrorReporter {
                 reportRule(null, null, context, null, new ContextMessage(AVOID_EMPTY_FILES, null));
             } else {
                 lineOffsets = getLineOffsets(src.split("\n"));
+                applyFileRules(src, filename);
                 final CFMLSource cfmlSource = new CFMLSource(src.contains("<!---") ? CommentReformatting.wrap(src) : src);
                 final ParserTag firstTag = getFirstTagQuietly(cfmlSource);
                 final List<Element> elements = new ArrayList<>();
@@ -345,6 +347,23 @@ public class CFLint implements IErrorReporter {
             fireFinishedProcessing(filename);
         }catch(final Exception e){
             throw new CFLintScanException(e);
+        }
+    }
+
+    private void applyFileRules(final String source, final String filename) {
+        checkIndentation(source, filename);
+    }
+
+    private void checkIndentation(final String source, final String filename) {
+        final Context context = new Context(filename, null, null, false,
+                handler, configuration);
+        String[] lines = source.split("\n");
+        for (int i = 0, linesLength = lines.length; i < linesLength; i++) {
+            String line = lines[i];
+            if (line.contains("\t")) {
+                reportRule(null, null, context, null, new ContextMessage(AVOID_TABS,
+                        null, i + 1, 0));
+            }
         }
     }
 
@@ -1344,6 +1363,13 @@ public class CFLint implements IErrorReporter {
             final CFLintPluginInfo.PluginInfoRule.PluginMessage msgInfo = new CFLintPluginInfo.PluginInfoRule.PluginMessage(
                     PARSE_ERROR);
             msgInfo.setMessageText("Unable to parse");
+            msgInfo.setSeverity(Levels.ERROR);
+            ruleInfo.getMessages().add(msgInfo);
+        } else if (AVOID_TABS.equals(msgcode)) {
+            ruleInfo = new CFLintPluginInfo.PluginInfoRule();
+            final CFLintPluginInfo.PluginInfoRule.PluginMessage msgInfo = new CFLintPluginInfo.PluginInfoRule.PluginMessage(
+                    AVOID_TABS);
+            msgInfo.setMessageText("Do not use tabs. Use spaces instead.");
             msgInfo.setSeverity(Levels.ERROR);
             ruleInfo.getMessages().add(msgInfo);
         } else {

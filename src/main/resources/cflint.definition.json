@@ -976,6 +976,30 @@
                     "severity": "WARNING"
                 }
             ]
+        },
+        {
+            "name": "GetInstanceChecker",
+            "className": "GetInstanceChecker",
+            "message": [
+                {
+                    "code": "INCORRECT_COMPONENT_NAME",
+                    "severity": "ERROR",
+                    "messageText": "Component [${variable}] does not exist"
+                }
+            ],
+            "parameter": []
+        },
+        {
+            "name": "FunctionCaseChecker",
+            "className": "FunctionCaseChecker",
+            "message": [
+                {
+                    "code": "INCORRECT_FUNCTION_CASE",
+                    "severity": "ERROR",
+                    "messageText": "Incorrect naming convention case for function: ${variable}. Use camel case!"
+                }
+            ],
+            "parameter": []
         }
     ],
     "ruleGroup": [
